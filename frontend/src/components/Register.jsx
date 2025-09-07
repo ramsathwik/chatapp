@@ -3,25 +3,26 @@ import { useRef } from "react";
 import registerhandler from "../utils/Registerhandler";
 import { useState } from "react";
 function Register() {
-  let [errors, setErrors] = useState([{ msg: "invalid" }]);
+  let [errors, setErrors] = useState([]);
   let nameRef = useRef("");
   let emailRef = useRef("");
   let passRef = useRef("");
   return (
     <div>
       <ul>
-        {errors.map((error, index) => {
-          return (
-            <li key={index} className="text-red-500">
-              {error.msg}
-            </li>
-          );
-        })}
+        {errors &&
+          errors.map((error, index) => {
+            return (
+              <li key={index} className="text-red-500">
+                {error}
+              </li>
+            );
+          })}
       </ul>
       <div className="text-blue-400">
         <form
           onSubmit={(e) => {
-            registerhandler(e, nameRef, emailRef, passRef);
+            registerhandler(e, nameRef, emailRef, passRef, setErrors);
           }}
         >
           <input

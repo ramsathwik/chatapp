@@ -15,33 +15,19 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(express.json());
 
-let users = [];
-
 //routes
 app.post("/register", Registervalidate(), validate, (req, res) => {
-  console.log("from register");
-  let { name, email, password } = req.body;
-  console.log(req.body);
   users.push(req.body);
-
-  users.forEach((user) => {
-    if (user.email == email) {
-      return res.status(400).json({ errors: "Email already Exist" });
-    }
-  });
-  return res.status(201).json(req.body);
+  console.log(users);
+  return res.status(201).json({ token: "dljdllfgj", user: req.body });
 });
 
-app.post("/login", Loginvalidate, validate, (req, res) => {
-  let { email, password } = req.body;
-  let user = users.find((user) => user.email == email);
-  if (!user) {
-    return res.status(401).json({ errors: "invalid credentials" });
-  }
-  if (user.password != password) {
-    return res.status(401).json({ errors: "invalid credentials" });
-  }
-  res.status(200).json({ token: "lduldnfd" });
+//models
+let users = require("./models/users");
+
+app.post("/login", Loginvalidate(), validate, (req, res) => {
+  let user = users.find((user) => user.email == req.body.email);
+  res.status(200).json({ token: "lduldnfd", user });
 });
 
 //server start

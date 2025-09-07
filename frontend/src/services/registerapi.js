@@ -1,6 +1,5 @@
 import { API_URL } from "../config/apiconfix";
 async function Registerapi(name, email, password) {
-  console.log("from register");
   let response = await fetch(`${API_URL}/register`, {
     method: "POST",
     headers: {
@@ -8,12 +7,10 @@ async function Registerapi(name, email, password) {
     },
     body: JSON.stringify({ name, email, password }),
   });
+  let data = await response.json();
   if (!response.ok) {
-    let data = await response.json();
-    throw new Error(data.errors);
-  } else {
-    let data = await response.json();
-    console.log(data);
+    throw { errors: data.errors || [{ msg: "Registration failed" }] };
   }
+  return data;
 }
 export default Registerapi;

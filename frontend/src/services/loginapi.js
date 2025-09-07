@@ -7,10 +7,11 @@ async function Loginapi(email, password) {
     },
     body: JSON.stringify({ email, password }),
   });
-  try {
-    let data = await response.json();
-  } catch (err) {
-    console.log("some error occur");
+  let data = await response.json();
+  if (!response.ok) {
+    console.log(data.errors);
+    throw { errors: data.errors || [{ msg: "login failure" }] };
   }
+  return data;
 }
 export default Loginapi;
