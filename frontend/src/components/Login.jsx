@@ -1,10 +1,11 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loginhandler from "../utils/loginhandler";
 import { useRef, useState } from "react";
 function Login() {
   let [errors, setErrors] = useState([]);
   let emailRef = useRef("");
   let passRef = useRef("");
+  let navigate = useNavigate();
   return (
     <div>
       <ul className="text-red-500">
@@ -16,7 +17,7 @@ function Login() {
       <div className="text-blue-400">
         <form
           onSubmit={(e) => {
-            Loginhandler(e, emailRef, passRef, setErrors);
+            Loginhandler(e, emailRef, passRef, setErrors, navigate);
           }}
         >
           <input

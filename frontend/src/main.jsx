@@ -5,6 +5,7 @@ import App from "./App.jsx";
 //custom
 import Register from "./components/Register.jsx";
 import Login from "./components/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 
 //built in
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -20,6 +21,10 @@ let router = createBrowserRouter([
       {
         path: "login",
         element: <Login />,
+      },
+      {
+        path: "dashboard",
+        element: <Dashboard />,
       },
     ],
   },

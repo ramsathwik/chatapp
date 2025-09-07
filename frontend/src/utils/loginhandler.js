@@ -1,5 +1,5 @@
 import Loginapi from "../services/loginapi";
-async function Loginhandler(e, emailRef, passRef, setErrors) {
+async function Loginhandler(e, emailRef, passRef, setErrors, navigate) {
   e.preventDefault();
   let email = emailRef.current.value;
   let password = passRef.current.value;
@@ -7,6 +7,7 @@ async function Loginhandler(e, emailRef, passRef, setErrors) {
     let data = await Loginapi(email, password);
     console.log(data);
     setErrors("");
+    navigate("/dashboard");
   } catch (err) {
     setErrors(err.errors.map((err) => err.msg));
   }

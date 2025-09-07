@@ -1,5 +1,12 @@
 import Registerapi from "../services/registerapi";
-async function registerhandler(e, nameRef, emailRef, passRef, setErrors) {
+async function registerhandler(
+  e,
+  nameRef,
+  emailRef,
+  passRef,
+  setErrors,
+  navigate
+) {
   e.preventDefault();
   let name = nameRef.current.value;
   let email = emailRef.current.value;
@@ -8,6 +15,7 @@ async function registerhandler(e, nameRef, emailRef, passRef, setErrors) {
     let data = await Registerapi(name, email, password);
     console.log(data);
     setErrors("");
+    navigate("/dashboard");
   } catch (err) {
     console.log(err.message);
     setErrors(err.errors.map((err) => err.msg));

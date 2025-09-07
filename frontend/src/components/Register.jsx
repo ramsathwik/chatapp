@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useRef } from "react";
 import registerhandler from "../utils/Registerhandler";
 import { useState } from "react";
@@ -7,6 +7,7 @@ function Register() {
   let nameRef = useRef("");
   let emailRef = useRef("");
   let passRef = useRef("");
+  let navigate = useNavigate();
   return (
     <div>
       <ul>
@@ -22,7 +23,7 @@ function Register() {
       <div className="text-blue-400">
         <form
           onSubmit={(e) => {
-            registerhandler(e, nameRef, emailRef, passRef, setErrors);
+            registerhandler(e, nameRef, emailRef, passRef, setErrors, navigate);
           }}
         >
           <input
