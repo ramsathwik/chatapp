@@ -2,13 +2,10 @@
 const express = require("express");
 const app = express();
 const cors = require("cors");
+let mongoose = require("mongoose");
 
-//custom middleware
-let {
-  Registervalidate,
-  Loginvalidate,
-  validate,
-} = require("./middleware/validator");
+//Routers
+let Authrouter = require("./routes/AuthRouter");
 
 //built-in middlwares
 app.use(express.urlencoded({ extended: true }));
@@ -16,21 +13,17 @@ app.use(cors());
 app.use(express.json());
 
 //routes
-app.post("/register", Registervalidate(), validate, (req, res) => {
-  users.push(req.body);
-  console.log(users);
-  return res.status(201).json({ token: "dljdllfgj", user: req.body });
-});
-
-//models
-let users = require("./models/users");
-
-app.post("/login", Loginvalidate(), validate, (req, res) => {
-  let user = users.find((user) => user.email == req.body.email);
-  res.status(200).json({ token: "lduldnfd", user });
-});
+app.use("/", Authrouter);
 
 //server start
-app.listen(3000, () => {
-  console.log(`server is listening at http://localhost:3000`);
-});
+mongoose
+  .connect("mongodb+srv://user:user@cluster0.70kvqx3.mongodb.net/")
+  .then(() => {
+    console.log("successfully connected to database");
+    app.listen(3000, () => {
+      console.log(`server is listening at http://localhost:3000`);
+    });
+  })
+  .catch((err) => {
+    console.log("error connecting to database");
+  });

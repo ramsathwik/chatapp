@@ -1,5 +1,6 @@
 const { body, validationResult } = require("express-validator");
 let users = require("../models/users");
+let bcrypt = require("bcryptjs");
 const Registervalidate = () => {
   return [
     body("name").notEmpty().withMessage("Name is required"),
@@ -30,9 +31,10 @@ const Loginvalidate = () => {
         }
         return true;
       }),
-    body("password").custom((value, { req }) => {
+    body("password").custom(async (value, { req }) => {
       let user = users.find((user) => user.email == req.body.email);
-      if (!user || user.password != value) {
+      const ismatch = await bcrypt.compare(value, user.password);
+      if (!ismatch) {
         throw new Error("invalid credentials");
       }
       return true;
