@@ -3,8 +3,8 @@ import "./index.css";
 import App from "./App.jsx";
 
 //custom
-import Register from "../components/Register.jsx";
-import Login from "../components/Login.jsx";
+import Register from "./components/Register.jsx";
+import Login from "./components/Login.jsx";
 
 //built in
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
