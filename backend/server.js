@@ -3,6 +3,8 @@ const express = require("express");
 const app = express();
 const cors = require("cors");
 let mongoose = require("mongoose");
+let { Server } = require("socket.io");
+let server;
 
 //Routers
 let Authrouter = require("./routes/AuthRouter");
@@ -15,14 +17,23 @@ app.use(express.json());
 //routes
 app.use("/", Authrouter);
 
+//custom
+let sockethandling = require("./socket");
+
 //server start
 mongoose
   .connect("mongodb+srv://user:user@cluster0.70kvqx3.mongodb.net/chatapp")
   .then(() => {
     console.log("successfully connected to database");
-    app.listen(3000, () => {
+    server = app.listen(3000, () => {
       console.log(`server is listening at http://localhost:3000`);
     });
+    let io = new Server(server, {
+      cors: {
+        origin: "*",
+      },
+    });
+    sockethandling(io);
   })
   .catch((err) => {
     console.log("error connecting to database");

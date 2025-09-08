@@ -1,4 +1,5 @@
 import Registerapi from "../services/registerapi";
+import { jwtDecode } from "jwt-decode";
 async function registerhandler(
   e,
   nameRef,
@@ -13,7 +14,7 @@ async function registerhandler(
   let password = passRef.current.value;
   try {
     let data = await Registerapi(name, email, password);
-    localStorage.setItem("token", token);
+    localStorage.setItem("token", data.token);
     setErrors("");
     navigate("/dashboard");
   } catch (err) {

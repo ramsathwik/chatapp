@@ -1,4 +1,5 @@
 import Loginapi from "../services/loginapi";
+import { jwtDecode } from "jwt-decode";
 async function Loginhandler(e, emailRef, passRef, setErrors, navigate) {
   e.preventDefault();
   let email = emailRef.current.value;
@@ -6,6 +7,8 @@ async function Loginhandler(e, emailRef, passRef, setErrors, navigate) {
   try {
     let data = await Loginapi(email, password);
     localStorage.setItem("token", data.token);
+    let payload = jwtDecode(data.token);
+    console.log(payload);
     setErrors("");
     navigate("/dashboard");
   } catch (err) {

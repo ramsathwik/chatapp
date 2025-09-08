@@ -18,7 +18,7 @@ let Registercontroller = async (req, res) => {
 
 let Logincontroller = async (req, res) => {
   let user = await User.findOne({ email: req.body.email });
-  let payload = { id: user._id, user: user.name };
+  let payload = { id: user._id, name: user.name };
   let secret = "mysecret";
   let token = jwt.sign(payload, secret, { expiresIn: "1h" });
   res.status(200).json({ token });
