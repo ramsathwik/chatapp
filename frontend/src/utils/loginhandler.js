@@ -5,11 +5,13 @@ async function Loginhandler(e, emailRef, passRef, setErrors, navigate) {
   let password = passRef.current.value;
   try {
     let data = await Loginapi(email, password);
-    console.log(data);
+    localStorage.setItem("token", data.token);
     setErrors("");
     navigate("/dashboard");
   } catch (err) {
-    setErrors(err.errors.map((err) => err.msg));
+    if (err.errors) {
+      setErrors(err.errors.map((err) => err.msg));
+    }
   }
   emailRef.current.value = "";
   passRef.current.value = "";

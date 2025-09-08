@@ -9,7 +9,6 @@ async function Loginapi(email, password) {
   });
   let data = await response.json();
   if (!response.ok) {
-    console.log(data.errors);
     throw { errors: data.errors || [{ msg: "login failure" }] };
   }
   return data;

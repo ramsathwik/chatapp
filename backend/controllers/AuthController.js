@@ -1,20 +1,27 @@
 //built-in
 let bcrypt = require("bcryptjs");
+let jwt = require("jsonwebtoken");
 
 //models
-let users = require("../models/users");
+let User = require("../models/users");
 
 let Registercontroller = async (req, res) => {
   let password = req.body.password;
   req.body.password = await bcrypt.hash(password, 10);
-  users.push(req.body);
-  console.log(users);
-  return res.status(201).json({ token: "dljdllfgj", user: req.body });
+  let newUser = new User(req.body);
+  await newUser.save();
+  let payload = { id: newUser._id, name: newUser.name };
+  let secret = "mysecret";
+  let token = jwt.sign(payload, secret, { expiresIn: "1h" });
+  return res.status(201).json({ token });
 };
 
-let Logincontroller = (req, res) => {
-  let user = users.find((user) => user.email == req.body.email);
-  res.status(200).json({ token: "lduldnfd", user });
+let Logincontroller = async (req, res) => {
+  let user = await User.findOne({ email: req.body.email });
+  let payload = { id: user._id, user: user.name };
+  let secret = "mysecret";
+  let token = jwt.sign(payload, secret, { expiresIn: "1h" });
+  res.status(200).json({ token });
 };
 
 module.exports = { Registercontroller, Logincontroller };

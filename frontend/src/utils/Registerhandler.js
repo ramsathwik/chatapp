@@ -13,11 +13,10 @@ async function registerhandler(
   let password = passRef.current.value;
   try {
     let data = await Registerapi(name, email, password);
-    console.log(data);
+    localStorage.setItem("token", token);
     setErrors("");
     navigate("/dashboard");
   } catch (err) {
-    console.log(err.message);
     setErrors(err.errors.map((err) => err.msg));
   }
 

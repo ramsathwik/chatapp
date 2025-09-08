@@ -17,7 +17,7 @@ app.use("/", Authrouter);
 
 //server start
 mongoose
-  .connect("mongodb+srv://user:user@cluster0.70kvqx3.mongodb.net/")
+  .connect("mongodb+srv://user:user@cluster0.70kvqx3.mongodb.net/chatapp")
   .then(() => {
     console.log("successfully connected to database");
     app.listen(3000, () => {
