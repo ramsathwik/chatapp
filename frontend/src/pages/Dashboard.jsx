@@ -2,8 +2,14 @@ import useSocket from "../hooks/useSocket";
 import UsersList from "../components/UsersList";
 import Chatbox from "../components/Chatbox";
 import Messagebox from "../components/Messagebox";
+import { SocketContext } from "../contexts/SocketContext";
+import { useContext } from "react";
 function Dashboard() {
-  let { users, messages, sendMessage } = useSocket();
+  let socketData = useContext(SocketContext);
+  if (!socketData) {
+    return <p>loading the chat</p>;
+  }
+  let { users, messages, sendMessage } = socketData;
   return (
     <div className="flex">
       <UsersList users={users}></UsersList>

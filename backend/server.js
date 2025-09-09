@@ -36,5 +36,5 @@ mongoose
     sockethandling(io);
   })
   .catch((err) => {
-    console.log("error connecting to database");
+    console.log(err);
   });

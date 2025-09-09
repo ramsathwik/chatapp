@@ -6,6 +6,7 @@ import App from "./App.jsx";
 import Register from "./components/Register.jsx";
 import Login from "./components/Login.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
+import { SocketProvider } from "./contexts/SocketContext";
 
 //built in
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
@@ -24,7 +25,11 @@ let router = createBrowserRouter([
       },
       {
         path: "dashboard",
-        element: <Dashboard />,
+        element: (
+          <SocketProvider>
+            <Dashboard />
+          </SocketProvider>
+        ),
       },
     ],
   },
