@@ -1,7 +1,8 @@
-function Chatbox({ messages }) {
+import Header from "./Header";
+function Chatbox({ messages, user }) {
   return (
     <>
-      <h1>Heading</h1>
+      <Header user={user}></Header>
       {messages &&
         messages.map((msg, index) => {
           return (

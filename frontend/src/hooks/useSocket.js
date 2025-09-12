@@ -51,6 +51,8 @@ function useSocket() {
       );
       if (!current) {
         setMessages([]);
+        selectedUserRef.current = null;
+        setSelectedUser(null);
       }
     }
 
@@ -94,7 +96,14 @@ function useSocket() {
     }
   }
 
-  return { users, messages, setSelectedUser, sendMessage, renderMessages };
+  return {
+    users,
+    messages,
+    setSelectedUser,
+    sendMessage,
+    renderMessages,
+    selectedUser,
+  };
 }
 
 export default useSocket;

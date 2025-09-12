@@ -2,7 +2,12 @@ import { useSocketContext } from "../contexts/SocketContext";
 function UsersList({ users }) {
   let { setSelectedUser, renderMessages } = useSocketContext();
   if (users.length == 0) {
-    return <p>no online users</p>;
+    return (
+      <div>
+        <input type="text" placeholder="Search" />
+        <p>no online users</p>
+      </div>
+    );
   }
   return (
     <div>
