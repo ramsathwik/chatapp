@@ -1,6 +1,6 @@
 import { useSocketContext } from "../contexts/SocketContext";
-function UsersList({ users }) {
-  let { setSelectedUser, renderMessages } = useSocketContext();
+function UsersList() {
+  let { users, setSelectedUser, renderMessages } = useSocketContext();
   if (users.length == 0) {
     return (
       <div>

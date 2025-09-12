@@ -1,8 +1,11 @@
 import Header from "./Header";
-function Chatbox({ messages, user }) {
+import { useSocketContext } from "../contexts/SocketContext";
+function Chatbox() {
+  let { messages } = useSocketContext();
+
   return (
     <>
-      <Header user={user}></Header>
+      <Header></Header>
       {messages &&
         messages.map((msg, index) => {
           return (

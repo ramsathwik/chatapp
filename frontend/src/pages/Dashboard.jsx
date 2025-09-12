@@ -1,4 +1,3 @@
-import useSocket from "../hooks/useSocket";
 import UsersList from "../components/UsersList";
 import Chatbox from "../components/Chatbox";
 import Messagebox from "../components/Messagebox";
@@ -8,14 +7,14 @@ function Dashboard() {
   if (!socketData) {
     return <p>loading the chat</p>;
   }
-  let { users, messages, sendMessage, selectedUser } = socketData;
+  let { selectedUser } = socketData;
   return (
     <div className="flex">
-      <UsersList users={users}></UsersList>
+      <UsersList></UsersList>
       {selectedUser ? (
         <div className="flex-1">
-          <Chatbox messages={messages} user={selectedUser}></Chatbox>
-          <Messagebox onsend={sendMessage}></Messagebox>
+          <Chatbox></Chatbox>
+          <Messagebox></Messagebox>
         </div>
       ) : (
         <p>welcome to chat app</p>

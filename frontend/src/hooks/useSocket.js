@@ -7,9 +7,11 @@ function useSocket() {
   const [users, setUsers] = useState([]);
   const [messages, setMessages] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  let [typingstatus, setTypingStatus] = useState(null);
   const selectedUserRef = useRef();
   const socketRef = useRef();
   const userRef = useRef();
+  const typingTimeoutRef = useRef();
 
   useEffect(() => {
     const socket = io("http://localhost:3000");
@@ -56,10 +58,24 @@ function useSocket() {
       }
     }
 
+    function typinghandler(msg) {
+      setTypingStatus(msg.id);
+
+      if (typingTimeoutRef.current) {
+        clearTimeout(typingTimeoutRef.current);
+      }
+
+      typingTimeoutRef.current = setTimeout(() => {
+        setTypingStatus(null);
+        typingTimeoutRef.current = null;
+      }, 1000);
+    }
+
     // Attach listeners
     socket.on("chatMessage", handleChatMessage);
     socket.on("privateMessage", handlePrivateMessage);
     socket.on("onlineusers", handleOnlineUsers);
+    socket.on("showTyping", typinghandler);
 
     // Emit user presence
     socket.emit("setuser", userRef.current);
@@ -96,6 +112,14 @@ function useSocket() {
     }
   }
 
+  //show typing status
+  function showTyping() {
+    socketRef.current.emit("showTyping", {
+      fromid: socketRef.current.id,
+      to: selectedUserRef.current,
+    });
+  }
+
   return {
     users,
     messages,
@@ -103,6 +127,9 @@ function useSocket() {
     sendMessage,
     renderMessages,
     selectedUser,
+    showTyping,
+    typingstatus,
+    selectedUserRef,
   };
 }
 

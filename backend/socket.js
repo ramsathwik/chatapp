@@ -19,7 +19,7 @@ function sockethandling(io) {
       console.log("online:", onlineusers);
       io.emit("onlineusers", onlineusers);
     });
-
+    //disconnect
     socket.on("disconnect", (reason, details) => {
       console.log(reason, details);
       if (currentuser) {
@@ -34,11 +34,17 @@ function sockethandling(io) {
       io.emit("chatMessage", msg);
     });
 
+    //private message
     socket.on("privateMessage", (msg) => {
-      console.log(msg);
       let { from, fromid, to, text } = msg;
       io.to(to).emit("privateMessage", { from, id: fromid, text });
       socket.emit("privateMessage", { from, id: to, text });
+    });
+
+    //typing status
+    socket.on("showTyping", (msg) => {
+      let { fromid, to } = msg;
+      io.to(to).emit("showTyping", { id: fromid, text: "typing..." });
     });
   });
 }

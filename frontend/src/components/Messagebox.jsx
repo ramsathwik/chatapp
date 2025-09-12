@@ -1,15 +1,24 @@
 import messagehandler from "../utils/messagehandler";
 import { useRef } from "react";
-function Messagebox({ onsend }) {
+import { useSocketContext } from "../contexts/SocketContext";
+function Messagebox() {
+  let { sendMessage, showTyping } = useSocketContext();
   let msgRef = useRef();
   return (
     <form
       onSubmit={(e) => {
         let msg = messagehandler(e, msgRef);
-        onsend(msg);
+        sendMessage(msg);
       }}
     >
-      <input type="text" placeholder="Message" ref={msgRef} />
+      <input
+        type="text"
+        placeholder="Message"
+        ref={msgRef}
+        onChange={() => {
+          showTyping();
+        }}
+      />
       <button type="submit">send</button>
     </form>
   );

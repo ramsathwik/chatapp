@@ -8,7 +8,6 @@ async function Loginhandler(e, emailRef, passRef, setErrors, navigate) {
     let data = await Loginapi(email, password);
     localStorage.setItem("token", data.token);
     let payload = jwtDecode(data.token);
-    console.log(payload);
     setErrors("");
     navigate("/dashboard");
   } catch (err) {
