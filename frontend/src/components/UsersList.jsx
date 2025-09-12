@@ -1,7 +1,6 @@
+import { useSocketContext } from "../contexts/SocketContext";
 function UsersList({ users }) {
-  function handlefriend(socketid) {
-    console.log(socketid);
-  }
+  let { setSelectedUser, renderMessages } = useSocketContext();
   if (users.length == 0) {
     return <p>no online users</p>;
   }
@@ -15,7 +14,8 @@ function UsersList({ users }) {
             <div
               key={client.id}
               onClick={() => {
-                handlefriend(client.id);
+                renderMessages(client.id);
+                setSelectedUser(client.user);
               }}
             >
               {client.user}

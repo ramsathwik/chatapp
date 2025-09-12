@@ -11,3 +11,6 @@ export function SocketProvider({ children }) {
     </SocketContext.Provider>
   );
 }
+export function useSocketContext() {
+  return useContext(SocketContext);
+}

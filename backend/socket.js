@@ -20,7 +20,8 @@ function sockethandling(io) {
       io.emit("onlineusers", onlineusers);
     });
 
-    socket.on("disconnect", () => {
+    socket.on("disconnect", (reason, details) => {
+      console.log(reason, details);
       if (currentuser) {
         // remove only if that user has no active socket anymore
         onlineusers = onlineusers.filter((u) => u.user !== currentuser);
@@ -28,9 +29,16 @@ function sockethandling(io) {
         io.emit("onlineusers", onlineusers);
       }
     });
-
+    //chat message
     socket.on("chatMessage", (msg) => {
       io.emit("chatMessage", msg);
+    });
+
+    socket.on("privateMessage", (msg) => {
+      console.log(msg);
+      let { from, fromid, to, text } = msg;
+      io.to(to).emit("privateMessage", { from, id: fromid, text });
+      socket.emit("privateMessage", { from, id: to, text });
     });
   });
 }

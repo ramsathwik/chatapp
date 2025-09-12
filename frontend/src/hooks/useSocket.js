@@ -1,48 +1,100 @@
 import { io } from "socket.io-client";
 import { useEffect, useState, useRef } from "react";
 import { jwtDecode } from "jwt-decode";
-function useSocket() {
-  let [users, setUsers] = useState([]);
-  let [messages, setmessages] = useState([]);
-  let [selecteduser, setcurrentuser] = useState(null);
-  let socketRef = useRef();
-  let userRef = useRef();
 
-  console.log("from use socket", selecteduser);
+function useSocket() {
+  const chatsRef = useRef({ public: [] }); // Changed to object for clarity
+  const [users, setUsers] = useState([]);
+  const [messages, setMessages] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const selectedUserRef = useRef();
+  const socketRef = useRef();
+  const userRef = useRef();
 
   useEffect(() => {
-    let socket = io("http://localhost:3000");
+    const socket = io("http://localhost:3000");
     socketRef.current = socket;
 
+    // Extract user name from JWT, with error handling
     let token = localStorage.getItem("token");
-    let payload = jwtDecode(token);
-    userRef.current = payload.name;
+    try {
+      const payload = jwtDecode(token);
+      userRef.current = payload?.name || "Guest";
+    } catch (e) {
+      userRef.current = "Guest";
+      console.error("Invalid or missing JWT token", e);
+    }
 
-    //chatMessage
-    socket.on("chatMessage", (msg) => {
-      setmessages((prev) => [...prev, msg]);
-    });
+    // Event handler functions for cleanup
+    function handleChatMessage(msg) {
+      setMessages((prev) => [...prev, msg]);
+    }
 
-    //set user
+    function handlePrivateMessage(msg) {
+      if (!chatsRef.current[msg.id]) {
+        chatsRef.current[msg.id] = [];
+      }
+      chatsRef.current[msg.id].push(msg);
+      // Optionally update message display if viewing this chat
+      if (selectedUserRef.current === msg.id) {
+        setMessages([...chatsRef.current[msg.id]]);
+      }
+    }
+
+    function handleOnlineUsers(userList) {
+      const filtered = userList.filter(
+        (client) => client.user !== userRef.current
+      );
+      setUsers(filtered);
+      let current = users.find(
+        (client) => client.id == selectedUserRef.current
+      );
+      if (!current) {
+        setMessages([]);
+      }
+    }
+
+    // Attach listeners
+    socket.on("chatMessage", handleChatMessage);
+    socket.on("privateMessage", handlePrivateMessage);
+    socket.on("onlineusers", handleOnlineUsers);
+
+    // Emit user presence
     socket.emit("setuser", userRef.current);
 
-    //online users
-    socket.on("onlineusers", (users) => {
-      console.log("users is ", users);
-      console.log(userRef.current);
-      users = users.filter((client) => client.user != userRef.current);
-      console.log("users is ", users);
-      setUsers(users);
-    });
+    // Cleanup
     return () => {
-      socket.off();
+      socket.off("chatMessage", handleChatMessage);
+      socket.off("privateMessage", handlePrivateMessage);
+      socket.off("onlineusers", handleOnlineUsers);
       socket.disconnect();
     };
   }, []);
 
-  function sendMessage(msg) {
-    socketRef.current.emit("chatMessage", { from: userRef.current, text: msg });
+  // Function to display messages for a selected user/chat
+  function renderMessages(socketId) {
+    setMessages(chatsRef.current[socketId] || []);
+    selectedUserRef.current = socketId;
   }
-  return { users, messages, setcurrentuser, sendMessage };
+
+  // Send message, public or private
+  function sendMessage(msg) {
+    if (selectedUserRef.current) {
+      socketRef.current.emit("privateMessage", {
+        from: userRef.current,
+        fromid: socketRef.current.id,
+        to: selectedUserRef.current,
+        text: msg,
+      });
+    } else {
+      socketRef.current.emit("chatMessage", {
+        from: userRef.current,
+        text: msg,
+      });
+    }
+  }
+
+  return { users, messages, setSelectedUser, sendMessage, renderMessages };
 }
+
 export default useSocket;
