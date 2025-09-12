@@ -1,6 +1,6 @@
 import { useSocketContext } from "../contexts/SocketContext";
 function UsersList() {
-  let { users, setSelectedUser, renderMessages } = useSocketContext();
+  let { users, setSelectedUser, renderMessages, unread } = useSocketContext();
   if (users.length == 0) {
     return (
       <div>
@@ -24,6 +24,7 @@ function UsersList() {
               }}
             >
               {client.user}
+              {unread[client.id] ? <span>({unread[client.id]})</span> : ""}
             </div>
           );
         })}

@@ -12,6 +12,7 @@ function useSocket() {
   const socketRef = useRef();
   const userRef = useRef();
   const typingTimeoutRef = useRef();
+  let [unread, setUnread] = useState({ public: 0 });
 
   useEffect(() => {
     const socket = io("http://localhost:3000");
@@ -35,11 +36,17 @@ function useSocket() {
     function handlePrivateMessage(msg) {
       if (!chatsRef.current[msg.id]) {
         chatsRef.current[msg.id] = [];
+        setUnread((prevUnread) => ({ ...prevUnread, [msg.id]: 0 }));
       }
       chatsRef.current[msg.id].push(msg);
-      // Optionally update message display if viewing this chat
+
       if (selectedUserRef.current === msg.id) {
         setMessages([...chatsRef.current[msg.id]]);
+      } else {
+        setUnread((prevUnread) => ({
+          ...prevUnread,
+          [msg.id]: (prevUnread[msg.id] || 0) + 1,
+        }));
       }
     }
 
@@ -48,8 +55,9 @@ function useSocket() {
         (client) => client.user !== userRef.current
       );
       setUsers(filtered);
-      let current = users.find(
-        (client) => client.id == selectedUserRef.current
+
+      let current = filtered.find(
+        (client) => client.id === selectedUserRef.current
       );
       if (!current) {
         setMessages([]);
@@ -89,10 +97,20 @@ function useSocket() {
     };
   }, []);
 
+  useEffect(() => {
+    let count = Object.values(unread).reduce((a, b) => a + b, 0);
+    document.title = `${count > 0 ? `New Messages(${count})` : "Vite + React"}`;
+  }, [unread]);
+
   // Function to display messages for a selected user/chat
   function renderMessages(socketId) {
     setMessages(chatsRef.current[socketId] || []);
     selectedUserRef.current = socketId;
+
+    setUnread((prevUnread) => ({
+      ...prevUnread,
+      [socketId]: 0,
+    }));
   }
 
   // Send message, public or private
@@ -130,6 +148,7 @@ function useSocket() {
     showTyping,
     typingstatus,
     selectedUserRef,
+    unread,
   };
 }
 
