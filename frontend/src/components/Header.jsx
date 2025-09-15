@@ -1,13 +1,18 @@
 import { useSocketContext } from "../contexts/SocketContext";
+
 function Header() {
-  let { selectedUser, typingstatus, selectedUserRef } = useSocketContext();
+  const { selectedUser, typingstatus, selectedUserRef } = useSocketContext();
+
   return (
-    <div>
-      <h1>{selectedUser}</h1>
+    <div className="bg-white border-b border-gray-200 p-4 shadow-sm flex items-center justify-between">
+      <div className="text-blue-700 font-semibold text-lg">
+        {selectedUser || "Select a user"}
+      </div>
       {typingstatus && typingstatus === selectedUserRef.current && (
-        <span>typing...</span>
+        <div className="text-sm text-gray-500 italic">typing...</div>
       )}
     </div>
   );
 }
+
 export default Header;
